@@ -20,7 +20,7 @@ const TaskContextProvider = props => {
     try {
       const res = await Axios.post("/api/tasks", task)
       const data = res.data
-      setTasks([...tasks, data])
+      setTasks([data, ...tasks])
     } catch (err) {
       console.log(err.response.data)
     }
