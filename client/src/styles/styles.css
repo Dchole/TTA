@@ -1,0 +1,185 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.External {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+.App {
+  position: absolute;
+  border: 2px solid #06f;
+  border-radius: 10px;
+  top: 15%;
+  left: 50%;
+  padding-top: 30px;
+  background: #f4f4f4;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  height: 75vh;
+  width: 60%;
+  -webkit-box-shadow: 0px 5px 10px -5px #555;
+          box-shadow: 0px 5px 10px -5px #555;
+  opacity: 0.7;
+  overflow-y: scroll;
+}
+
+.App::-webkit-scrollbar {
+  width: 8px;
+}
+
+.App::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #888;
+  -webkit-transition: linear 500ms;
+  transition: linear 500ms;
+}
+
+.App::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.App::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+#add-button {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  background: #06f;
+  border: 1px solid black;
+  border-radius: 50%;
+  padding: 20px;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 5px 5px 0px #888;
+          box-shadow: 0px 5px 5px 0px #888;
+  outline: none;
+}
+
+#add-button:hover {
+  background: #05f;
+}
+
+#add-button:active {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+h1 {
+  text-align: center;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+}
+
+ul {
+  list-style-type: none;
+}
+
+ul.tasks-list {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 90%;
+  margin: auto;
+}
+
+ul.tasks-list li {
+  background: white;
+  border: 2px solid #06f;
+  border-radius: 5px;
+  margin: 40px;
+  padding: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  cursor: pointer;
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+ul.tasks-list li:hover {
+  background: #0df3;
+}
+
+ul.tasks-list li span {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+ul.tasks-list li span #title {
+  text-transform: capitalize;
+  font-weight: 600;
+  margin: 0;
+}
+
+ul.tasks-list li span div {
+  margin-top: 30px;
+  margin-left: 70px;
+  font-size: 0.9em;
+}
+
+ul.tasks-list li button {
+  background: red;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  height: 20px;
+}
+
+ul.tasks-list li button:hover {
+  background: #aa0000;
+}
+
+ul.tasks-list li input[type="checkbox"] {
+  cursor: pointer;
+}
+
+ul.app-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.modal {
+  position: absolute;
+  width: 50%;
+  height: 60px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background: cyan;
+  z-index: 100;
+  -webkit-box-shadow: 0 0 100px 100vw #333a;
+          box-shadow: 0 0 100px 100vw #333a;
+}
+
+.modal button {
+  padding: 8px 40px;
+  margin: 20px;
+  background: white;
+  border: 1px solid #06f;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal button:hover {
+  background: #f4f4f4;
+}
+
+.modal button:last-child {
+  background: #06f;
+  color: white;
+  border: none;
+}
+
+.modal button:last-child:hover {
+  background: #03f;
+}
+/*# sourceMappingURL=styles.css.map */
