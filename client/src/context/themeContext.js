@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react"
+import React, { createContext, useState, useEffect } from "react"
 import { createMuiTheme } from "@material-ui/core"
 import { blue } from "@material-ui/core/colors"
 
@@ -22,6 +22,11 @@ const ThemeContextProvider = props => {
       type: lightMode ? "light" : "dark"
     }
   })
+
+  useEffect(() => {
+    const timeOfDay = new Date().getHours()
+    timeOfDay >= 19 || timeOfDay <= 6 ? setLightMode(false) : setLightMode(true)
+  }, [])
 
   const handleTheme = () => setLightMode(!lightMode)
 
