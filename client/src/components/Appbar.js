@@ -4,6 +4,7 @@ import { List, ListItem, IconButton } from "@material-ui/core"
 import MenuIcon from "@material-ui/icons/Menu"
 import AccountIcon from "@material-ui/icons/Person"
 import Brightness7Icon from "@material-ui/icons/Brightness7"
+import Brightness4Icon from "@material-ui/icons/Brightness4"
 import { themeContext } from "../context/themeContext"
 
 const useStyles = makeStyles(() => ({
@@ -16,11 +17,15 @@ const useStyles = makeStyles(() => ({
 
 export default () => {
   const classes = useStyles()
-  const { handleTheme } = useContext(themeContext)
+  const { lightMode, handleTheme } = useContext(themeContext)
 
   const navList = [
     <MenuIcon />,
-    <Brightness7Icon fontSize="large" />,
+    lightMode ? (
+      <Brightness4Icon fontSize="large" />
+    ) : (
+      <Brightness7Icon fontSize="large" />
+    ),
     <AccountIcon />
   ]
 

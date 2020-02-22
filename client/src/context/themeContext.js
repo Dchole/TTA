@@ -31,7 +31,7 @@ const ThemeContextProvider = props => {
   const handleTheme = () => setLightMode(!lightMode)
 
   return (
-    <themeContext.Provider value={{ theme, handleTheme }}>
+    <themeContext.Provider value={{ theme, handleTheme, lightMode }}>
       {props.children}
     </themeContext.Provider>
   )
