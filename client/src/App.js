@@ -1,23 +1,32 @@
-import React, { useState } from "react"
-import "./styles/styles.css"
+import React, { useContext } from "react"
 import Appbar from "./components/Appbar"
 import TodoList from "./components/TodoList"
 import AddTask from "./components/AddTask"
-import Modal from "./components/Modal"
+import {
+  Typography,
+  CssBaseline,
+  Container,
+  MuiThemeProvider
+} from "@material-ui/core"
+import { themeContext } from "./context/themeContext"
 
 const App = () => {
-  const [display, setDisplay] = useState(false)
+  const { theme } = useContext(themeContext)
 
   return (
-    <div className="External">
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       <Appbar />
-      <Modal display={display} setDisplay={setDisplay} />
-      <div className="App">
-        <h1>The Todo App</h1>
+      <Container maxWidth="md">
+        <br />
+        <Typography variant="h4" align="center">
+          The Todo App
+        </Typography>
+        <br />
         <TodoList />
-        <AddTask setDisplay={setDisplay} />
-      </div>
-    </div>
+      </Container>
+      <AddTask />
+    </MuiThemeProvider>
   )
 }
 

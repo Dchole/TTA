@@ -1,50 +1,94 @@
-import React, { useContext, useState } from "react"
+import React, { useContext } from "react"
 import { taskContext } from "../context/taskContext"
-
-const styles = {
-  color: "#333",
-  fontStyle: "italic",
-  textDecoration: "line-through",
-  opacity: 0.5
-}
+import Typography from "@material-ui/core/Typography"
+import IconButton from "@material-ui/core/IconButton"
+import DeleteIcon from "@material-ui/icons/Delete"
+import EditIcon from "@material-ui/icons/Edit"
+import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  FormControlLabel,
+  ExpansionPanelDetails,
+  ExpansionPanelActions,
+  Fab,
+  List,
+  ListItem,
+  Switch
+} from "@material-ui/core"
 
 const TodoList = () => {
   const { tasks, handleDelete, handleCompleted } = useContext(taskContext)
-  const [expanded, setExpanded] = useState([])
+
+  const completedStyles = {
+    fontStyle: "italic",
+    textDecoration: "line-through",
+    opacity: 0.5
+  }
 
   return (
-    <ul className="tasks-list">
+    <List>
       {tasks.map(task => (
-        <li key={task._id}>
-          <span
-            onClick={_ => {
-              const cpExpanded = [...expanded]
-              cpExpanded.splice(cpExpanded.indexOf(task._id), 1)
-              expanded.includes(task._id)
-                ? setExpanded(cpExpanded)
-                : setExpanded([...expanded, task._id])
-            }}
-          >
-            <p id="title" style={task.status ? styles : null}>
-              {task.title}
-            </p>
-            {expanded.includes(task._id) ? (
-              <div>
-                <p>Time: {task.expTime}</p>
-                <p>Description: {task.description}</p>
-                <p>Status: {task.status ? "Completed" : "Not Completed"}</p>
-              </div>
-            ) : null}
-          </span>
-          <input
-            type="checkbox"
-            checked={task.status}
-            onChange={() => handleCompleted(task._id)}
-          />
-          <button onClick={() => handleDelete(task._id)}>x</button>
-        </li>
+        <ListItem key={task._id}>
+          <ExpansionPanel style={{ width: "100%" }}>
+            <ExpansionPanelSummary>
+              <Typography
+                variant="h6"
+                style={
+                  task.status
+                    ? { ...completedStyles, flexGrow: 1, paddingTop: 7 }
+                    : { flexGrow: 1, paddingTop: 7 }
+                }
+              >
+                {task.title}
+              </Typography>
+              <FormControlLabel
+                aria-label="Task Status"
+                onChange={_ => handleCompleted(task._id)}
+                control={
+                  <Switch
+                    color="primary"
+                    checked={task.status}
+                    onChange={_ => handleCompleted(task._id)}
+                  />
+                }
+              />
+              <IconButton onClick={_ => handleDelete(task._id)}>
+                <DeleteIcon color="secondary" />
+              </IconButton>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <Typography
+                variant="subtitle2"
+                color="textSecondary"
+                align="center"
+                component="p"
+                style={{ width: "100%" }}
+              >
+                {task.description}
+              </Typography>
+            </ExpansionPanelDetails>
+            <ExpansionPanelActions>
+              <Typography
+                variant="caption"
+                color={task.status ? "textSecondary" : "primary"}
+                component="small"
+                style={{ marginLeft: 20, flexGrow: 1, fontWeight: "bolder" }}
+              >
+                {new Date(task.expTime).toDateString()}
+              </Typography>
+              <Fab
+                size="small"
+                color="primary"
+                style={{ margin: 15 }}
+                disabled={task.status}
+              >
+                <EditIcon fontSize="small" />
+              </Fab>
+            </ExpansionPanelActions>
+          </ExpansionPanel>
+        </ListItem>
       ))}
-    </ul>
+    </List>
   )
 }
 
