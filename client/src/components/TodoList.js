@@ -35,8 +35,17 @@ const TodoList = () => {
                 variant="h6"
                 style={
                   task.status
-                    ? { ...completedStyles, flexGrow: 1, paddingTop: 7 }
-                    : { flexGrow: 1, paddingTop: 7 }
+                    ? {
+                        ...completedStyles,
+                        flexGrow: 1,
+                        paddingTop: 7,
+                        textTransform: "capitalize"
+                      }
+                    : {
+                        flexGrow: 1,
+                        paddingTop: 7,
+                        textTransform: "capitalize"
+                      }
                 }
               >
                 {task.title}
