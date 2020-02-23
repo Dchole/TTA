@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useState, useEffect } from "react"
 import { taskContext } from "../context/taskContext"
 import Typography from "@material-ui/core/Typography"
 import IconButton from "@material-ui/core/IconButton"
@@ -30,8 +30,18 @@ const TodoList = () => {
   }
 
   const handleOpen = () => setOpen(true)
-
   const handleClose = () => setOpen(false)
+
+  const today = new Date()
+
+  const formatTime = time => {
+    const timeArray = time.toLocaleTimeString().split(":")
+    const ampm = timeArray[2].split(" ")[1]
+    timeArray.pop()
+    const newFormat = `${timeArray.join(":")} ${ampm}`
+
+    return newFormat
+  }
 
   return (
     <>
@@ -97,7 +107,9 @@ const TodoList = () => {
                   component="small"
                   style={{ marginLeft: 20, flexGrow: 1, fontWeight: "bolder" }}
                 >
-                  {new Date(task.expTime).toDateString()}
+                  {new Date(task.expTime).getDate() === today.getDate()
+                    ? formatTime(new Date(task.expTime))
+                    : new Date(task.expTime).toDateString()}
                 </Typography>
                 <Fab
                   size="small"

@@ -9,13 +9,14 @@ import {
   Grid
 } from "@material-ui/core"
 import { taskContext } from "../context/taskContext"
+import PickDateAndTime from "./PickDateAndTime"
 
 const TaskForm = ({ open, handleClose }) => {
   const { addTask } = useContext(taskContext)
 
   const [task, setTask] = useState({
     title: "",
-    expTime: "",
+    expTime: new Date(new Date().toISOString()),
     description: "",
     status: false
   })
@@ -23,12 +24,15 @@ const TaskForm = ({ open, handleClose }) => {
   const handleInput = name => event =>
     setTask({ ...task, [name]: event.target.value })
 
+  const handleDateTimeChange = date =>
+    setTask({ ...task, expTime: new Date(date).toUTCString() })
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Create a new activity</DialogTitle>
       <DialogContent>
         <Grid container component="form" spacing={2}>
-          <Grid item sm={6} xs={12}>
+          <Grid item xs={12}>
             <TextField
               name="title"
               type="text"
@@ -37,20 +41,10 @@ const TaskForm = ({ open, handleClose }) => {
               placeholder="Activity Title"
               value={task.title}
               onChange={handleInput("title")}
+              fullWidth
             />
           </Grid>
-          <Grid item sm={6} xs={12}>
-            <TextField
-              name="expTime"
-              type="text"
-              variant="outlined"
-              size="small"
-              placeholder="Time or Date of Activity"
-              value={task.expTime}
-              onChange={handleInput("expTime")}
-            />
-          </Grid>
-          <Grid item xs>
+          <Grid item xs={12}>
             <TextField
               name="description"
               type="text"
@@ -59,6 +53,15 @@ const TaskForm = ({ open, handleClose }) => {
               placeholder="Description"
               value={task.description}
               onChange={handleInput("description")}
+              fullWidth
+              multiline
+              rows="4"
+            />
+          </Grid>
+          <Grid item xs>
+            <PickDateAndTime
+              date={task.expTime}
+              handleDateTimeChange={handleDateTimeChange}
             />
           </Grid>
         </Grid>
