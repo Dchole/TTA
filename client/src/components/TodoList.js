@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react"
+import React, { useContext, useState } from "react"
 import { taskContext } from "../context/taskContext"
 import Typography from "@material-ui/core/Typography"
 import IconButton from "@material-ui/core/IconButton"
@@ -13,15 +13,25 @@ import {
   Fab,
   List,
   ListItem,
-  Switch
+  Switch,
+  TextField,
+  Button,
+  Grid
 } from "@material-ui/core"
 import ConfirmDelete from "./ConfirmDelete"
 
 let task_id
 
 const TodoList = () => {
-  const { tasks, handleCompleted } = useContext(taskContext)
+  const { tasks, handleCompleted, handleTaskUpdate } = useContext(taskContext)
   const [open, setOpen] = useState(false)
+  const [taskUpdate, setTaskUpdate] = useState({
+    title: "",
+    description: "",
+    expTime: "",
+    status: ""
+  })
+  const [editMode, setEditMode] = useState([])
 
   const completedStyles = {
     fontStyle: "italic",
@@ -31,6 +41,14 @@ const TodoList = () => {
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const handleInput = (name, task) => event => {
+    setTaskUpdate({ ...task, [name]: event.target.value })
+  }
+
+  const handleStopEditMode = () => {
+    setEditMode([])
+  }
 
   const today = new Date()
 
@@ -50,33 +68,48 @@ const TodoList = () => {
           <ListItem key={task._id}>
             <ExpansionPanel style={{ width: "100%" }}>
               <ExpansionPanelSummary>
-                <Typography
-                  variant="h6"
-                  style={
-                    task.status
-                      ? {
-                          ...completedStyles,
-                          flexGrow: 1,
-                          paddingTop: 7,
-                          textTransform: "capitalize"
-                        }
-                      : {
-                          flexGrow: 1,
-                          paddingTop: 7,
-                          textTransform: "capitalize"
-                        }
-                  }
-                >
-                  {task.title}
-                </Typography>
+                {editMode.includes(task._id) ? (
+                  <div style={{ flexGrow: 1 }}>
+                    <TextField
+                      name="title"
+                      variant="outlined"
+                      type="text"
+                      size="small"
+                      placeholder="Add title"
+                      onChange={handleInput("title", task)}
+                      defaultValue={task.title}
+                      autoFocus
+                    />
+                  </div>
+                ) : (
+                  <Typography
+                    variant="h6"
+                    style={
+                      task.status
+                        ? {
+                            ...completedStyles,
+                            flexGrow: 1,
+                            paddingTop: 7,
+                            textTransform: "capitalize"
+                          }
+                        : {
+                            flexGrow: 1,
+                            paddingTop: 7,
+                            textTransform: "capitalize"
+                          }
+                    }
+                  >
+                    {task.title}
+                  </Typography>
+                )}
                 <FormControlLabel
                   aria-label="Task Status"
-                  onChange={_ => handleCompleted(task._id)}
+                  onChange={_ => handleCompleted(task)}
                   control={
                     <Switch
                       color="primary"
                       checked={task.status}
-                      onChange={_ => handleCompleted(task._id)}
+                      onChange={_ => handleCompleted(task._id, taskUpdate)}
                     />
                   }
                 />
@@ -90,35 +123,78 @@ const TodoList = () => {
                 </IconButton>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
-                <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  align="center"
-                  component="p"
-                  style={{ width: "100%" }}
-                >
-                  {task.description}
-                </Typography>
+                {editMode.includes(task._id) ? (
+                  <Grid container justify="flex-end">
+                    <TextField
+                      name="description"
+                      type="text"
+                      variant="outlined"
+                      size="small"
+                      placeholder="Description"
+                      onChange={handleInput("description", task)}
+                      fullWidth
+                      multiline
+                      rows="4"
+                      defaultValue={task.description}
+                    />
+                  </Grid>
+                ) : (
+                  <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    align="center"
+                    component="p"
+                    style={{ width: "100%" }}
+                  >
+                    {task.description}
+                  </Typography>
+                )}
               </ExpansionPanelDetails>
               <ExpansionPanelActions>
-                <Typography
-                  variant="caption"
-                  color={task.status ? "textSecondary" : "primary"}
-                  component="small"
-                  style={{ marginLeft: 20, flexGrow: 1, fontWeight: "bolder" }}
+                <div
+                  style={{
+                    marginLeft: 20,
+                    flexGrow: 1
+                  }}
                 >
-                  {new Date(task.expTime).getDate() === today.getDate()
-                    ? formatTime(new Date(task.expTime))
-                    : new Date(task.expTime).toDateString()}
-                </Typography>
-                <Fab
-                  size="small"
-                  color="primary"
-                  style={{ margin: 15 }}
-                  disabled={task.status}
-                >
-                  <EditIcon fontSize="small" />
-                </Fab>
+                  <Typography
+                    variant="caption"
+                    color={task.status ? "textSecondary" : "primary"}
+                    component="small"
+                    style={{ fontWeight: "bolder" }}
+                  >
+                    {new Date(task.expTime).getDate() === today.getDate()
+                      ? formatTime(new Date(task.expTime))
+                      : new Date(task.expTime).toDateString()}
+                  </Typography>
+                </div>
+                {editMode.includes(task._id) ? (
+                  <div style={{ marginTop: 15 }}>
+                    <Button color="primary" onClick={handleStopEditMode}>
+                      Close
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={_ => {
+                        handleTaskUpdate(task._id, taskUpdate)
+                        handleStopEditMode()
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : (
+                  <Fab
+                    size="small"
+                    color="primary"
+                    style={{ margin: 15 }}
+                    disabled={task.status}
+                    onClick={_ => setEditMode([...editMode, task._id])}
+                  >
+                    <EditIcon fontSize="small" />
+                  </Fab>
+                )}
               </ExpansionPanelActions>
             </ExpansionPanel>
           </ListItem>

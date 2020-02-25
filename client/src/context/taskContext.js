@@ -52,12 +52,19 @@ const TaskContextProvider = props => {
 
   const handleCompleted = id => {
     const cpTasks = [...tasks]
-    cpTasks.map(task =>
-      task._id === id ? (task.status = !task.status) : task.status
-    )
+    const task = cpTasks.find(task => task._id === id)
+    task.status = !task.status
+    editTask(id, task)
+    setTasks(cpTasks)
+  }
+
+  const handleTaskUpdate = (id, updatedTask) => {
+    const cpTasks = [...tasks]
 
     const task = cpTasks.find(task => task._id === id)
-    editTask(id, task)
+    cpTasks[cpTasks.indexOf(task)] = updatedTask
+
+    editTask(id, updatedTask)
     setTasks(cpTasks)
   }
 
@@ -67,7 +74,13 @@ const TaskContextProvider = props => {
 
   return (
     <taskContext.Provider
-      value={{ tasks, addTask, handleDelete, handleCompleted }}
+      value={{
+        tasks,
+        addTask,
+        handleTaskUpdate,
+        handleDelete,
+        handleCompleted
+      }}
     >
       {props.children}
     </taskContext.Provider>
