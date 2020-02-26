@@ -49,10 +49,6 @@ const TodoList = () => {
     setTaskUpdate({ ...task, [name]: event.target.value })
   }
 
-  // const handleDateTimeChange = (date, task) => {
-  //   setTaskUpdate({ ...taskUpdate, expTime: date })
-  // }
-
   const handleEditMode = task => {
     setSelectDate(task.expTime)
     setEditMode([...editMode, task._id])
