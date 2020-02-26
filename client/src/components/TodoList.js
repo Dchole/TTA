@@ -46,7 +46,7 @@ const TodoList = () => {
   const handleClose = () => setOpen(false)
 
   const handleInput = (name, task) => event => {
-    setTaskUpdate({ ...task, [name]: event || event.target.value })
+    setTaskUpdate({ ...task, [name]: event.target.value })
   }
 
   // const handleDateTimeChange = (date, task) => {
@@ -177,10 +177,10 @@ const TodoList = () => {
                       <DateTimePicker
                         variant="inline"
                         value={selectDate}
-                        onChange={_ => {
-                          setSelectDate()
-                          handleInput("expTime", task)
-                        }}
+                        onChange={setSelectDate}
+                        onBlur={_ =>
+                          setTaskUpdate({ ...task, expTime: selectDate })
+                        }
                         onError={console.log}
                         placeholder="Date and Time of activity"
                       />
