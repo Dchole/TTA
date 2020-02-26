@@ -19,6 +19,8 @@ import {
   Grid
 } from "@material-ui/core"
 import ConfirmDelete from "./ConfirmDelete"
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers"
+import DateFnsUtils from "@date-io/date-fns"
 
 let task_id
 
@@ -32,6 +34,7 @@ const TodoList = () => {
     status: ""
   })
   const [editMode, setEditMode] = useState([])
+  const [selectDate, setSelectDate] = useState()
 
   const completedStyles = {
     fontStyle: "italic",
@@ -43,11 +46,22 @@ const TodoList = () => {
   const handleClose = () => setOpen(false)
 
   const handleInput = (name, task) => event => {
-    setTaskUpdate({ ...task, [name]: event.target.value })
+    setTaskUpdate({ ...task, [name]: event || event.target.value })
   }
 
-  const handleStopEditMode = () => {
-    setEditMode([])
+  // const handleDateTimeChange = (date, task) => {
+  //   setTaskUpdate({ ...taskUpdate, expTime: date })
+  // }
+
+  const handleEditMode = task => {
+    setSelectDate(task.expTime)
+    setEditMode([...editMode, task._id])
+  }
+
+  const handleStopEditMode = id => {
+    const cpEditMode = [...editMode]
+    const restOfMembers = cpEditMode.filter(member => member !== id)
+    setEditMode(restOfMembers)
   }
 
   const today = new Date()
@@ -77,6 +91,7 @@ const TodoList = () => {
                       size="small"
                       placeholder="Add title"
                       onChange={handleInput("title", task)}
+                      onFocus={handleInput("title", task)}
                       defaultValue={task.title}
                       autoFocus
                     />
@@ -157,20 +172,38 @@ const TodoList = () => {
                     flexGrow: 1
                   }}
                 >
-                  <Typography
-                    variant="caption"
-                    color={task.status ? "textSecondary" : "primary"}
-                    component="small"
-                    style={{ fontWeight: "bolder" }}
-                  >
-                    {new Date(task.expTime).getDate() === today.getDate()
-                      ? formatTime(new Date(task.expTime))
-                      : new Date(task.expTime).toDateString()}
-                  </Typography>
+                  {editMode.includes(task._id) ? (
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <DateTimePicker
+                        variant="inline"
+                        value={selectDate}
+                        onChange={_ => {
+                          setSelectDate()
+                          handleInput("expTime", task)
+                        }}
+                        onError={console.log}
+                        placeholder="Date and Time of activity"
+                      />
+                    </MuiPickersUtilsProvider>
+                  ) : (
+                    <Typography
+                      variant="caption"
+                      color={task.status ? "textSecondary" : "primary"}
+                      component="small"
+                      style={{ fontWeight: "bolder" }}
+                    >
+                      {new Date(task.expTime).getDate() === today.getDate()
+                        ? formatTime(new Date(task.expTime))
+                        : new Date(task.expTime).toDateString()}
+                    </Typography>
+                  )}
                 </div>
                 {editMode.includes(task._id) ? (
                   <div style={{ marginTop: 15 }}>
-                    <Button color="primary" onClick={handleStopEditMode}>
+                    <Button
+                      color="primary"
+                      onClick={_ => handleStopEditMode(task._id)}
+                    >
                       Close
                     </Button>
                     <Button
@@ -178,7 +211,8 @@ const TodoList = () => {
                       color="primary"
                       onClick={_ => {
                         handleTaskUpdate(task._id, taskUpdate)
-                        handleStopEditMode()
+                        handleStopEditMode(task._id)
+                        setTaskUpdate({ ...taskUpdate, expTime: selectDate })
                       }}
                     >
                       Done
@@ -190,7 +224,7 @@ const TodoList = () => {
                     color="primary"
                     style={{ margin: 15 }}
                     disabled={task.status}
-                    onClick={_ => setEditMode([...editMode, task._id])}
+                    onClick={_ => handleEditMode(task)}
                   >
                     <EditIcon fontSize="small" />
                   </Fab>
