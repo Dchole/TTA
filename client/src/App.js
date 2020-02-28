@@ -9,6 +9,7 @@ import {
   MuiThemeProvider
 } from "@material-ui/core"
 import { themeContext } from "./context/themeContext"
+import Feedback from "./components/Feedback"
 
 const App = () => {
   const { theme } = useContext(themeContext)
@@ -26,6 +27,7 @@ const App = () => {
         <TodoList />
       </Container>
       <AddTask />
+      <Feedback />
     </MuiThemeProvider>
   )
 }

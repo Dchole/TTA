@@ -5,6 +5,10 @@ export const taskContext = createContext()
 
 const TaskContextProvider = props => {
   const [tasks, setTasks] = useState([])
+  const [feedback, setFeedback] = useState({
+    open: false,
+    message: ""
+  })
 
   const fetchTasks = async () => {
     try {
@@ -20,6 +24,7 @@ const TaskContextProvider = props => {
     try {
       const res = await Axios.post("/api/tasks", task)
       const data = res.data
+      setFeedback({ open: true, message: "Task added Successfully!" })
       setTasks([data, ...tasks])
     } catch (err) {
       console.log(err.response.data)
@@ -29,6 +34,7 @@ const TaskContextProvider = props => {
   const editTask = async (id, task) => {
     try {
       await Axios.put(`/api/tasks/${id}`, task)
+      setFeedback({ open: true, message: "Task Updated Successfully!" })
     } catch (err) {
       console.log(err.response.data)
     }
@@ -38,7 +44,7 @@ const TaskContextProvider = props => {
     try {
       const res = await Axios.delete(`/api/tasks/${id}`)
       const data = res.data
-      console.log(data)
+      setFeedback({ open: true, message: data.message })
     } catch (err) {
       console.log(err.response.data)
     }
@@ -68,6 +74,20 @@ const TaskContextProvider = props => {
     setTasks(cpTasks)
   }
 
+  ;(function() {
+    const today = new Date()
+
+    for (const task of tasks) {
+      if (
+        today.getDate() - new Date(task.expTime).getDate() >= 1 &&
+        today.getHours() >= new Date(task.expTime).getHours() &&
+        task.status
+      ) {
+        deleteTask(task._id)
+      }
+    }
+  })()
+
   useEffect(() => {
     fetchTasks()
   }, [])
@@ -77,6 +97,8 @@ const TaskContextProvider = props => {
       value={{
         tasks,
         addTask,
+        feedback,
+        setFeedback,
         handleTaskUpdate,
         handleDelete,
         handleCompleted
