@@ -2,7 +2,7 @@
   "name": "tta",
   "version": "1.0.0",
   "description": "The todo app",
-  "main": "server.js",
+  "main": "index.js",
   "author": "Bunny",
   "license": "MIT",
   "scripts": {
