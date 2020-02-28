@@ -13,9 +13,9 @@ const tasks = require("./routes/api/tasks")
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "build")))
 
-app.get("/*", (req, res) => {
+app.get("/*", (req, res) =>
   res.sendFile(path.join(__dirname, "build", "index.html"))
-})
+)
 
 mongoose
   .connect(process.env.DB, {
