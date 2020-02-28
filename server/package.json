@@ -1,7 +1,12 @@
 {
+  "name": "server",
+  "version": "1.21.1",
+  "main": "index.js",
+  "author": "Bunny",
+  "license": "MIT",
   "scripts": {
-    "server": "node server.js",
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "server": "nodemon server.js"
   },
   "dependencies": {
     "dotenv": "^8.2.0",

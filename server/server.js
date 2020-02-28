@@ -1,5 +1,6 @@
 const express = require("express")
 const mongoose = require("mongoose")
+const path = require("path")
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -10,6 +11,11 @@ const tasks = require("./routes/api/tasks")
 
 // Middlewares
 app.use(express.json())
+app.use(express.static(path.join(__dirname, "build")))
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"))
+})
 
 mongoose
   .connect(process.env.DB, {

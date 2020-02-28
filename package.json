@@ -2,13 +2,17 @@
   "name": "tta",
   "version": "1.0.0",
   "description": "The todo app",
-  "main": "index.js",
+  "main": "server.js",
   "author": "Bunny",
   "license": "MIT",
   "scripts": {
+    "start": "cd server && yarn start",
     "client": "cd client && yarn start",
-    "server": "cd server && yarn start",
+    "server": "cd server && yarn server",
     "dev": "concurrently  \"yarn run server\" \"yarn run client\""
+  },
+  "engines": {
+    "node": "12.14.1"
   },
   "devDependencies": {
     "concurrently": "^5.1.0"
