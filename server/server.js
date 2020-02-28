@@ -10,12 +10,8 @@ require("dotenv").config()
 const tasks = require("./routes/api/tasks")
 
 // Middlewares
-app.use(express.json())
+// app.use(express.json())
 app.use(express.static(path.join(__dirname, "build")))
-
-app.get("/*", (req, res) =>
-  res.sendFile(path.join(__dirname, "build", "index.html"))
-)
 
 mongoose
   .connect(process.env.DB, {
@@ -29,5 +25,9 @@ mongoose
 
 // Routes Middlewares
 app.use("/api/tasks", tasks)
+
+app.get("/*", (req, res) =>
+  res.sendFile(path.join(__dirname, "build", "index.html"))
+)
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`))
