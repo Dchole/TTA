@@ -29,24 +29,32 @@ const App = () => {
 
   return (
     <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       {loading ? (
         <div style={style}>
           {console.log("loading")}
           <CircularProgress />
         </div>
       ) : null}
-      <CssBaseline />
-      <Appbar />
-      <Container maxWidth="md">
-        <br />
-        <Typography variant="h4" align="center">
-          The Todo App
+      {error ? (
+        <Typography variant="h1" color="error" align="center">
+          {error}
         </Typography>
-        <br />
-        <TodoList />
-      </Container>
-      <AddTask />
-      <Feedback />
+      ) : (
+        <>
+          <Appbar />
+          <Container maxWidth="md">
+            <br />
+            <Typography variant="h4" align="center">
+              The Todo App
+            </Typography>
+            <br />
+            <TodoList />
+          </Container>
+          <AddTask />
+          <Feedback />
+        </>
+      )}
     </MuiThemeProvider>
   )
 }
