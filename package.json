@@ -1,0 +1,20 @@
+{
+  "name": "tta",
+  "version": "1.0.0",
+  "description": "The todo app",
+  "main": "index.js",
+  "author": "Bunny",
+  "license": "MIT",
+  "scripts": {
+    "start": "cd app && yarn start",
+    "client": "cd client && yarn start",
+    "server": "cd app && yarn server",
+    "dev": "concurrently  \"yarn run server\" \"yarn run client\""
+  },
+  "devDependencies": {
+    "concurrently": "^5.1.0"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
+}
