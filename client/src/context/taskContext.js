@@ -28,22 +28,26 @@ const TaskContextProvider = props => {
 
   const addTask = async task => {
     try {
-      setState({ ...state, tasks: [data, ...tasks] })
+      setState({ ...state, loading: true })
       const res = await Axios.post("/api/tasks", task)
       const data = res.data
       setFeedback({ open: true, message: "Task added Successfully!" })
-      setState({ ...state, tasks: [data, ...tasks] })
+      setState({ loading: false, tasks: [data, ...state.tasks], error: "" })
     } catch (err) {
       console.log(err.response.data)
+      setState({ ...state, loading: false, error: err.response.message })
     }
   }
 
   const editTask = async (id, task) => {
     try {
+      setState({ ...state, loading: true })
       await Axios.put(`/api/tasks/${id}`, task)
       setFeedback({ open: true, message: "Task Updated Successfully!" })
+      setState({ ...state, loading: false })
     } catch (err) {
       console.log(err.response.data)
+      setState({ ...state, loading: false, error: err.response.message })
     }
   }
 
@@ -59,32 +63,32 @@ const TaskContextProvider = props => {
 
   const handleDelete = id => {
     deleteTask(id)
-    const cpTasks = tasks.filter(task => task._id !== id)
-    setTasks(cpTasks)
+    const cpTasks = state.tasks.filter(task => task._id !== id)
+    setState({ ...state, tasks: [...cpTasks], error: "" })
   }
 
   const handleCompleted = id => {
-    const cpTasks = [...tasks]
+    const cpTasks = [...state.tasks]
     const task = cpTasks.find(task => task._id === id)
     task.status = !task.status
     editTask(id, task)
-    setTasks(cpTasks)
+    setState({ ...state, tasks: [...cpTasks], error: "" })
   }
 
   const handleTaskUpdate = (id, updatedTask) => {
-    const cpTasks = [...tasks]
+    const cpTasks = [...state.tasks]
 
     const task = cpTasks.find(task => task._id === id)
     cpTasks[cpTasks.indexOf(task)] = updatedTask
 
     editTask(id, updatedTask)
-    setTasks(cpTasks)
+    setState({ ...state, tasks: [...cpTasks], error: "" })
   }
 
   ;(function() {
     const today = new Date()
 
-    for (const task of tasks) {
+    for (const task of state.tasks) {
       if (
         today.getDate() - new Date(task.expTime).getDate() >= 1 &&
         today.getHours() >= new Date(task.expTime).getHours() &&
@@ -102,7 +106,7 @@ const TaskContextProvider = props => {
   return (
     <taskContext.Provider
       value={{
-        tasks,
+        state,
         addTask,
         feedback,
         setFeedback,

@@ -25,7 +25,11 @@ import DateFnsUtils from "@date-io/date-fns"
 let task_id
 
 const TodoList = () => {
-  const { tasks, handleCompleted, handleTaskUpdate } = useContext(taskContext)
+  const {
+    state: { tasks },
+    handleCompleted,
+    handleTaskUpdate
+  } = useContext(taskContext)
   const [open, setOpen] = useState(false)
   const [taskUpdate, setTaskUpdate] = useState({
     title: "",
@@ -33,6 +37,7 @@ const TodoList = () => {
     expTime: "",
     status: ""
   })
+  console.log(tasks)
   const [editMode, setEditMode] = useState([])
   const [selectDate, setSelectDate] = useState()
 

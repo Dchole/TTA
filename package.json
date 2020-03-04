@@ -6,9 +6,9 @@
   "author": "Bunny",
   "license": "MIT",
   "scripts": {
-    "start": "cd app && yarn start",
+    "start": "cd server && yarn start",
     "client": "cd client && yarn start",
-    "server": "cd app && yarn server",
+    "server": "cd server && yarn server",
     "dev": "concurrently  \"yarn run server\" \"yarn run client\""
   },
   "devDependencies": {
