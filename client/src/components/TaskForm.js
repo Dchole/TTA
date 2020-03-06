@@ -1,15 +1,13 @@
 import React, { useState, useContext } from "react"
-import {
-  TextField,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Dialog,
-  Grid
-} from "@material-ui/core"
-import { taskContext } from "../context/taskContext"
+import TextField from "@material-ui/core/TextField"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogActions from "@material-ui/core/DialogActions"
+import Button from "@material-ui/core/Button"
+import Dialog from "@material-ui/core/Dialog"
+import Grid from "@material-ui/core/Grid"
 import PickDateAndTime from "./PickDateAndTime"
+import { taskContext } from "../context/taskContext"
 
 const TaskForm = ({ open, handleClose }) => {
   const { addTask } = useContext(taskContext)

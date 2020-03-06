@@ -4,9 +4,9 @@ import Axios from "axios"
 export const taskContext = createContext()
 
 const TaskContextProvider = props => {
+  const [tasks, setTasks] = useState([])
   const [state, setState] = useState({
     loading: false,
-    tasks: [],
     error: ""
   })
   const [feedback, setFeedback] = useState({
@@ -19,10 +19,11 @@ const TaskContextProvider = props => {
       setState({ ...state, loading: true })
       const res = await Axios.get("/api/tasks")
       const data = res.data
-      setState({ loading: false, tasks: data, error: "" })
+      setState({ loading: false, error: "" })
+      setTasks(data)
     } catch (err) {
       console.log(err.response)
-      setState({ ...state, loading: false, error: err.response.message })
+      setState({ loading: false, error: err.response.message })
     }
   }
 
@@ -32,10 +33,11 @@ const TaskContextProvider = props => {
       const res = await Axios.post("/api/tasks", task)
       const data = res.data
       setFeedback({ open: true, message: "Task added Successfully!" })
-      setState({ loading: false, tasks: [data, ...state.tasks], error: "" })
+      setState({ loading: false, error: "" })
+      setTasks([data, ...tasks])
     } catch (err) {
       console.log(err.response.data)
-      setState({ ...state, loading: false, error: err.response.message })
+      setState({ loading: false, error: err.response.message })
     }
   }
 
@@ -44,10 +46,10 @@ const TaskContextProvider = props => {
       setState({ ...state, loading: true })
       await Axios.put(`/api/tasks/${id}`, task)
       setFeedback({ open: true, message: "Task Updated Successfully!" })
-      setState({ ...state, loading: false })
+      setState({ loading: false, error: "" })
     } catch (err) {
       console.log(err.response.data)
-      setState({ ...state, loading: false, error: err.response.message })
+      setState({ loading: false, error: err.response.message })
     }
   }
 
@@ -63,32 +65,35 @@ const TaskContextProvider = props => {
 
   const handleDelete = id => {
     deleteTask(id)
-    const cpTasks = state.tasks.filter(task => task._id !== id)
-    setState({ ...state, tasks: [...cpTasks], error: "" })
+    const cpTasks = tasks.filter(task => task._id !== id)
+    setState({ ...state, error: "" })
+    setTasks([...cpTasks])
   }
 
   const handleCompleted = id => {
-    const cpTasks = [...state.tasks]
+    const cpTasks = [...tasks]
     const task = cpTasks.find(task => task._id === id)
     task.status = !task.status
     editTask(id, task)
-    setState({ ...state, tasks: [...cpTasks], error: "" })
+    setState({ ...state, error: "" })
+    setTasks([...cpTasks])
   }
 
   const handleTaskUpdate = (id, updatedTask) => {
-    const cpTasks = [...state.tasks]
+    const cpTasks = [...tasks]
 
     const task = cpTasks.find(task => task._id === id)
     cpTasks[cpTasks.indexOf(task)] = updatedTask
 
     editTask(id, updatedTask)
-    setState({ ...state, tasks: [...cpTasks], error: "" })
+    setState({ ...state, error: "" })
+    setTasks([...cpTasks])
   }
 
   ;(function() {
     const today = new Date()
 
-    for (const task of state.tasks) {
+    for (const task of tasks) {
       if (
         today.getDate() - new Date(task.expTime).getDate() >= 1 &&
         today.getHours() >= new Date(task.expTime).getHours() &&
@@ -106,6 +111,7 @@ const TaskContextProvider = props => {
   return (
     <taskContext.Provider
       value={{
+        tasks,
         state,
         addTask,
         feedback,
