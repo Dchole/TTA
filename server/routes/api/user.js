@@ -1,12 +1,10 @@
 const router = require("express").Router()
 const User = require("../../models/user")
+const Refresh = require("../../models/refreshTokens")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const authenticate = require("../middleware/auth")
 
-let { refreshTokens } = require("../../models/user")
-
-console.log(refreshTokens)
 require("dotenv").config()
 
 router.get("/getUser", authenticate, async (req, res) => {
@@ -48,20 +46,24 @@ router.post("/login", async (req, res) => {
     if (!user) return res.json({ message: "wrong email", path: "email" })
     if (!password)
       return res.json({ message: "wrong password!", path: "password" })
+
     const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "2m"
     })
-    const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
-    refreshTokens.push(refreshToken)
 
+    const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_SECRET)
+    const token = new Refresh({ refresh_tokens: refreshToken })
+    await token.save()
     res.json({ accessToken, refreshToken })
   } catch (err) {
     res.send(err)
   }
 })
 
-router.post("/token", (req, res) => {
+router.post("/token", async (req, res) => {
   const { token } = req.body
+  const refresh = await Refresh.find()
+  const refreshTokens = refresh.map(rt => rt.refresh_tokens)
 
   if (!token) return res.sendStatus(401)
 
@@ -82,9 +84,8 @@ router.post("/token", (req, res) => {
   })
 })
 
-router.post("/logout", (req, res) => {
-  const { token } = req.body
-  refreshTokens = refreshTokens.filter(t => t !== token)
+router.get("/logout", async (req, res) => {
+  await Refresh.deleteMany()
 
   res.send("Logout successful")
 })
