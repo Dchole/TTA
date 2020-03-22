@@ -4,8 +4,9 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const authenticate = require("../middleware/auth")
 
-let refreshTokens = require("../refresh")
+let { refreshTokens } = require("../../models/user")
 
+console.log(refreshTokens)
 require("dotenv").config()
 
 router.get("/getUser", authenticate, async (req, res) => {
