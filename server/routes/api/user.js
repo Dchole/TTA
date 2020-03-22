@@ -70,24 +70,23 @@ router.post("/token", async (req, res) => {
   if (!refreshTokens.includes(token)) return res.sendStatus(403)
 
   jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
-    if (err) {
-      return res.sendStatus(403)
-    }
+    if (err) return res.sendStatus(403)
 
     const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
       expiresIn: "20m"
     })
 
-    res.json({
-      accessToken
-    })
+    res.json({ accessToken })
   })
 })
 
 router.get("/logout", async (req, res) => {
-  await Refresh.deleteMany()
-
-  res.send("Logout successful")
+  try {
+    await Refresh.deleteMany()
+    res.json({ message: "Logout successful" })
+  } catch (err) {
+    res.send(err)
+  }
 })
 
 module.exports = router
