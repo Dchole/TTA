@@ -16,7 +16,7 @@ const TaskContextProvider = props => {
 
   const fetchTasks = async () => {
     try {
-      setState({ ...state, loading: true })
+      setState(prevState => ({ ...prevState, loading: true }))
       const res = await Axios.get("/api/tasks")
       const data = res.data
       setState({ loading: false, error: "" })

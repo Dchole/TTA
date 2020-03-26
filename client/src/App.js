@@ -8,24 +8,36 @@ import Container from "@material-ui/core/Container"
 import Feedback from "./components/Feedback"
 import { MuiThemeProvider } from "@material-ui/core"
 import { themeContext } from "./context/themeContext"
+import { BrowserRouter, Route } from "react-router-dom"
+import Login from "./components/Login"
 
 const App = () => {
   const { theme } = useContext(themeContext)
 
   return (
     <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Appbar />
-      <Container maxWidth="md">
-        <br />
-        <Typography variant="h4" align="center">
-          The Todo App
-        </Typography>
-        <br />
-        <TodoList />
-      </Container>
-      <AddTask />
-      <Feedback />
+      <BrowserRouter>
+        <Route path="/" component={Login} exact />
+        <Route
+          path="/home"
+          render={() => (
+            <>
+              <CssBaseline />
+              <Appbar />
+              <Container maxWidth="md">
+                <br />
+                <Typography variant="h4" align="center">
+                  The Todo App
+                </Typography>
+                <br />
+                <TodoList />
+              </Container>
+              <AddTask />
+              <Feedback />
+            </>
+          )}
+        />
+      </BrowserRouter>
     </MuiThemeProvider>
   )
 }
