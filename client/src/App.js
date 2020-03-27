@@ -8,9 +8,8 @@ import Container from "@material-ui/core/Container"
 import Feedback from "./components/Feedback"
 import { MuiThemeProvider } from "@material-ui/core"
 import { themeContext } from "./context/themeContext"
-import { BrowserRouter, Route } from "react-router-dom"
-import Login from "./components/Login"
-import Register from "./components/Register"
+import { BrowserRouter, Route, Switch } from "react-router-dom"
+import Landing from "./components/Landing"
 import Forms from "./components/Forms"
 
 const App = () => {
@@ -20,31 +19,29 @@ const App = () => {
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <Route
-          path="/"
-          render={props => (
-            <Forms login={<Login />} register={<Register />} {...props} />
-          )}
-          exact
-        />
-        <Route
-          path="/home"
-          render={() => (
-            <>
-              <Appbar />
-              <Container maxWidth="md">
-                <br />
-                <Typography variant="h4" align="center">
-                  The Todo App
-                </Typography>
-                <br />
-                <TodoList />
-              </Container>
-              <AddTask />
-              <Feedback />
-            </>
-          )}
-        />
+        <Switch>
+          <Route path="/" render={props => <Landing {...props} />} exact />
+          <Route path="/register" render={props => <Forms {...props} />} />
+          <Route path="/login" render={props => <Forms {...props} />} />
+          <Route
+            path="/home"
+            render={() => (
+              <>
+                <Appbar />
+                <Container maxWidth="md">
+                  <br />
+                  <Typography variant="h4" align="center">
+                    The Todo App
+                  </Typography>
+                  <br />
+                  <TodoList />
+                </Container>
+                <AddTask />
+                <Feedback />
+              </>
+            )}
+          />
+        </Switch>
       </BrowserRouter>
     </MuiThemeProvider>
   )

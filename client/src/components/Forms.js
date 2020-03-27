@@ -1,78 +1,34 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { Grid, Paper, Container, Typography, Button } from "@material-ui/core"
-import { Route } from "react-router-dom"
-import { blue, cyan } from "@material-ui/core/colors"
+import { Grid, Container, Paper } from "@material-ui/core"
+import Intro from "./Intro"
+import Register from "./Register"
+import Login from "./Login"
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
     height: "100vh",
     display: "flex",
-    justifyContent: "center",
     alignItems: "center"
-  },
-  start: {
-    backgroundImage: `linear-gradient(-45deg,${blue["A700"]},${cyan.A200})`,
-    height: "65vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-around",
-    alignItems: "center",
-    padding: "120px 90px 120px 90px",
-    color: "white"
   }
 }))
 
 const Forms = props => {
-  const { login, register } = props
+  const {
+    location: { pathname }
+  } = props
   const classes = useStyles()
+
   return (
     <div className={classes.root}>
-      <Container maxWidth="sm">
-        <Paper style={{ height: "65vh" }}>
+      <Container maxWidth="md">
+        <Paper>
           <Grid container>
-            <Grid item xs={12}>
-              <Route path="/signin" render={() => login} />
-              <div className={classes.start}>
-                <Typography variant="h5" align="center">
-                  Good Morning
-                  <span role="img" aria-label="morning-cloud-emoji">
-                    ⛅
-                  </span>
-                </Typography>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center"
-                  }}
-                >
-                  <Typography variant="body2" align="center">
-                    Hello User{" "}
-                    <span role="img" aria-label="smiley-face-emoji">
-                      🙂
-                    </span>
-                    , Welcome to{" "}
-                    <span style={{ fontWeight: "bolder" }}>Time Gap</span>
-                    . <br />
-                    Join us now and experience a new life{" "}
-                    <span role="img" aria-label="smiley-face-emoji">
-                      🙃
-                    </span>
-                  </Typography>
-                  <br />
-                  <Button
-                    variant="outlined"
-                    color="inherit"
-                    style={{ width: 100 }}
-                  >
-                    Sign Up
-                  </Button>
-                </div>
-              </div>
+            <Grid item xs={6}>
+              {pathname === "/register" ? <Register /> : <Intro {...props} />}
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Route path="/signup" render={() => register} />
+            <Grid item xs={6}>
+              {pathname === "/login" ? <Login /> : <Intro {...props} />}
             </Grid>
           </Grid>
         </Paper>
