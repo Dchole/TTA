@@ -1,6 +1,7 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { Paper, Container } from "@material-ui/core"
+import Container from "@material-ui/core/Container"
+import Paper from "@material-ui/core/Paper"
 import Intro from "./Intro"
 
 const useStyles = makeStyles(() => ({

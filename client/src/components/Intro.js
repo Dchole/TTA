@@ -7,12 +7,12 @@ import { Typography, Button } from "@material-ui/core"
 const useStyles = makeStyles(theme => ({
   start: {
     backgroundImage: `linear-gradient(-45deg,${blue["A700"]},${cyan.A200})`,
-    height: "65vh",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
-    padding: "120px 90px 120px 90px",
+    padding: "130px 90px 130px 90px",
     color: "white"
   }
 }))
