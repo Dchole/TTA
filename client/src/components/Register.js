@@ -1,4 +1,5 @@
 import React from "react"
+import { makeStyles } from "@material-ui/core/styles"
 import Avatar from "@material-ui/core/Avatar"
 import Button from "@material-ui/core/Button"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -9,12 +10,9 @@ import Link from "@material-ui/core/Link"
 import Grid from "@material-ui/core/Grid"
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined"
 import Typography from "@material-ui/core/Typography"
-import { makeStyles } from "@material-ui/core/styles"
-import Container from "@material-ui/core/Container"
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
@@ -36,7 +34,7 @@ export default function SignUp() {
   const classes = useStyles()
 
   return (
-    <Container component="main" maxWidth="xs">
+    <>
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -47,38 +45,27 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
-                autoComplete="fname"
-                name="firstName"
+                autoComplete="username"
+                name="username"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="username"
+                label="Username"
                 autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
+                autoComplete="email"
+                name="email"
                 variant="outlined"
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                label="Email"
               />
             </Grid>
             <Grid item xs={12}>
@@ -118,6 +105,6 @@ export default function SignUp() {
           </Grid>
         </form>
       </div>
-    </Container>
+    </>
   )
 }

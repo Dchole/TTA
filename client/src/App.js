@@ -10,19 +10,27 @@ import { MuiThemeProvider } from "@material-ui/core"
 import { themeContext } from "./context/themeContext"
 import { BrowserRouter, Route } from "react-router-dom"
 import Login from "./components/Login"
+import Register from "./components/Register"
+import Forms from "./components/Forms"
 
 const App = () => {
   const { theme } = useContext(themeContext)
 
   return (
     <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       <BrowserRouter>
-        <Route path="/" component={Login} exact />
+        <Route
+          path="/"
+          render={props => (
+            <Forms login={<Login />} register={<Register />} {...props} />
+          )}
+          exact
+        />
         <Route
           path="/home"
           render={() => (
             <>
-              <CssBaseline />
               <Appbar />
               <Container maxWidth="md">
                 <br />
