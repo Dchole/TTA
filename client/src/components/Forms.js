@@ -17,6 +17,7 @@ const Forms = props => {
   const {
     location: { pathname }
   } = props
+  console.log(props)
   const classes = useStyles()
 
   return (
@@ -35,7 +36,7 @@ const Forms = props => {
             </Grid>
             <Grid item xs={12} sm={6}>
               {pathname === "/login" ? (
-                <Login path={pathname} />
+                <Login {...props} />
               ) : (
                 <Hidden smDown>
                   <Intro {...props} />

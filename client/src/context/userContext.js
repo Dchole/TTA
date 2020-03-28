@@ -1,9 +1,11 @@
 import React, { createContext, useEffect, useState } from "react"
 import Axios from "axios"
+import { useHistory } from "react-router"
 
 export const userContext = createContext()
 
 const UserContextProvider = props => {
+  const history = useHistory()
   const [state, setState] = useState({
     token: null,
     isAuthenticated: false,
@@ -24,20 +26,21 @@ const UserContextProvider = props => {
       }
     }
 
-    state.token = localStorage.getItem("token")
-    console.log(state.token)
+    setState(prevState => ({
+      ...prevState,
+      token: localStorage.getItem("token")
+    }))
 
     if (state.token) {
-      config.headers["Authorization"] = `Bearer ${state.token}`
+      config.headers["authorization"] = `Bearer ${state.token}`
     }
-    console.log(config)
     return config
   }
 
   const fetchUser = async () => {
     try {
       setState(prevState => ({ ...prevState, isLoading: true }))
-      const res = await Axios.get("/api/user/getUser", tokenConfig())
+      const res = await Axios.get("/api/user/getUser", tokenConfig().headers)
       const { data } = res
       setState(prevState => ({
         ...prevState,
@@ -45,7 +48,7 @@ const UserContextProvider = props => {
         isLoading: false,
         user: data
       }))
-      console.log(state.user)
+      console.log(data)
     } catch (err) {
       console.error(err.response.data)
     }
@@ -59,6 +62,7 @@ const UserContextProvider = props => {
       if (url === "/login") {
         localStorage.setItem("token", data.accessToken)
         fetchUser()
+        history.replace("/home")
       } else setFeedback({ msg: data.message, error: null, errPath: null })
     } catch (err) {
       console.log(err.response)

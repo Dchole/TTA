@@ -1,5 +1,6 @@
-import React, { createContext, useState, useEffect } from "react"
+import React, { createContext, useState, useEffect, useContext } from "react"
 import Axios from "axios"
+import { userContext } from "./userContext"
 
 export const taskContext = createContext()
 
@@ -13,15 +14,32 @@ const TaskContextProvider = props => {
     open: false,
     message: ""
   })
+  const token = localStorage.getItem("token")
+
+  const tokenConfig = () => {
+    const config = {
+      headers: {
+        "Content-type": "application/json"
+      }
+    }
+
+    if (token) {
+      config.headers["authorization"] = `Bearer ${token}`
+    }
+    return config
+  }
 
   const fetchTasks = async () => {
     try {
       setState(prevState => ({ ...prevState, loading: true }))
-      const res = await Axios.get("/api/tasks")
+      const res = await Axios.get("/api/tasks", tokenConfig())
+      console.log(tokenConfig())
+
       const data = res.data
       setState({ loading: false, error: "" })
       setTasks(data)
     } catch (err) {
+      console.log(err.response.data)
       setState({ loading: false, error: err.response.message })
     }
   }

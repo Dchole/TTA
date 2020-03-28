@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function SignIn({ path }) {
+export default function SignIn({ history, location: { pathname } }) {
   const classes = useStyles()
   const [state, setState] = useState({
     email: "",
@@ -49,14 +49,17 @@ export default function SignIn({ path }) {
   })
   const [showPassword, setShowPassword] = useState(false)
 
-  const { handleFormSubmit } = useContext(userContext)
+  const {
+    state: { isAuthenticated },
+    handleFormSubmit
+  } = useContext(userContext)
 
   const handleInput = field => event => {
     setState({ ...state, [field]: event.target.value })
   }
 
   const handleSubmit = () => {
-    handleFormSubmit(state, path)
+    handleFormSubmit(state, pathname)
   }
 
   return (
@@ -94,7 +97,7 @@ export default function SignIn({ path }) {
           fullWidth
         >
           <InputLabel htmlFor="outlined-adornment-password">
-            Password
+            Password*
           </InputLabel>
           <OutlinedInput
             id="outlined-adornment-password"

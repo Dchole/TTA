@@ -5,14 +5,17 @@ import * as serviceWorker from "./serviceWorker"
 import TaskContextProvider from "./context/taskContext"
 import ThemeContextProvider from "./context/themeContext"
 import UserContextProvider from "./context/userContext"
+import { BrowserRouter } from "react-router-dom"
 
 ReactDOM.render(
   <ThemeContextProvider>
-    <UserContextProvider>
-      <TaskContextProvider>
-        <App />
-      </TaskContextProvider>
-    </UserContextProvider>
+    <BrowserRouter>
+      <UserContextProvider>
+        <TaskContextProvider>
+          <App />
+        </TaskContextProvider>
+      </UserContextProvider>
+    </BrowserRouter>
   </ThemeContextProvider>,
   document.getElementById("root")
 )
