@@ -22,7 +22,6 @@ const TaskContextProvider = props => {
       setState({ loading: false, error: "" })
       setTasks(data)
     } catch (err) {
-      console.log(err.response)
       setState({ loading: false, error: err.response.message })
     }
   }
@@ -36,7 +35,6 @@ const TaskContextProvider = props => {
       setState({ loading: false, error: "" })
       setTasks([data, ...tasks])
     } catch (err) {
-      console.log(err.response.data)
       setState({ loading: false, error: err.response.message })
     }
   }
@@ -48,7 +46,6 @@ const TaskContextProvider = props => {
       setFeedback({ open: true, message: "Task Updated Successfully!" })
       setState({ loading: false, error: "" })
     } catch (err) {
-      console.log(err.response.data)
       setState({ loading: false, error: err.response.message })
     }
   }

@@ -1,6 +1,6 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import { Grid, Container, Paper } from "@material-ui/core"
+import { Grid, Container, Paper, Hidden } from "@material-ui/core"
 import Intro from "./Intro"
 import Register from "./Register"
 import Login from "./Login"
@@ -24,11 +24,23 @@ const Forms = props => {
       <Container maxWidth="md">
         <Paper>
           <Grid container>
-            <Grid item xs={6}>
-              {pathname === "/register" ? <Register /> : <Intro {...props} />}
+            <Grid item xs={12} sm={6}>
+              {pathname === "/register" ? (
+                <Register path={pathname} />
+              ) : (
+                <Hidden smDown>
+                  <Intro {...props} />
+                </Hidden>
+              )}
             </Grid>
-            <Grid item xs={6}>
-              {pathname === "/login" ? <Login /> : <Intro {...props} />}
+            <Grid item xs={12} sm={6}>
+              {pathname === "/login" ? (
+                <Login path={pathname} />
+              ) : (
+                <Hidden smDown>
+                  <Intro {...props} />
+                </Hidden>
+              )}
             </Grid>
           </Grid>
         </Paper>

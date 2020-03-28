@@ -4,12 +4,15 @@ import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 import TaskContextProvider from "./context/taskContext"
 import ThemeContextProvider from "./context/themeContext"
+import UserContextProvider from "./context/userContext"
 
 ReactDOM.render(
   <ThemeContextProvider>
-    <TaskContextProvider>
-      <App />
-    </TaskContextProvider>
+    <UserContextProvider>
+      <TaskContextProvider>
+        <App />
+      </TaskContextProvider>
+    </UserContextProvider>
   </ThemeContextProvider>,
   document.getElementById("root")
 )

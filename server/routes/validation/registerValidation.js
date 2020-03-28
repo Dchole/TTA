@@ -1,6 +1,6 @@
 const Joi = require("@hapi/joi")
 
-const registerValidation = Joi.object({
+const registerValidation = Joi.object().keys({
   username: Joi.string()
     .min(3)
     .max(60)

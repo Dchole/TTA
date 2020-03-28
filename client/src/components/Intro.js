@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { Link } from "react-router-dom"
 import { blue, cyan } from "@material-ui/core/colors"
 import { Typography, Button } from "@material-ui/core"
+import { userContext } from "../context/userContext"
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   start: {
     backgroundImage: `linear-gradient(-45deg,${blue["A700"]},${cyan.A200})`,
     height: "100%",
@@ -19,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 const Intro = ({ location: { pathname } }) => {
   const classes = useStyles()
-  console.log(pathname)
+  const { state } = useContext(userContext)
 
   return (
     <>
@@ -51,7 +52,8 @@ const Intro = ({ location: { pathname } }) => {
             </span>
           </Typography>
           <br />
-          <Link
+          <Button
+            component={Link}
             to={
               pathname === "/"
                 ? "/register"
@@ -59,16 +61,16 @@ const Intro = ({ location: { pathname } }) => {
                 ? "/login"
                 : "/register"
             }
-            style={{ color: "white", textDecoration: "none" }}
+            variant="outlined"
+            color="inherit"
+            style={{ width: 100 }}
           >
-            <Button variant="outlined" color="inherit" style={{ width: 100 }}>
-              {pathname === "/"
-                ? "Sign Up"
-                : pathname === "/register"
-                ? "Sign In"
-                : "Sign Up"}
-            </Button>
-          </Link>
+            {pathname === "/"
+              ? "Sign Up"
+              : pathname === "/register"
+              ? "Sign In"
+              : "Sign Up"}
+          </Button>
         </div>
       </div>
     </>
