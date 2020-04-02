@@ -7,7 +7,7 @@ export const userContext = createContext()
 const UserContextProvider = props => {
   const history = useHistory()
   const [state, setState] = useState({
-    token: null,
+    token: localStorage.getItem("token") ?? null,
     isAuthenticated: false,
     isLoading: false,
     user: null
@@ -22,25 +22,19 @@ const UserContextProvider = props => {
   const tokenConfig = () => {
     const config = {
       headers: {
-        "Content-type": "application/json"
+        "Content-type": "application/json",
+        Authorization: `Bearer ${state.token}`
       }
     }
 
-    setState(prevState => ({
-      ...prevState,
-      token: localStorage.getItem("token")
-    }))
-
-    if (state.token) {
-      config.headers["authorization"] = `Bearer ${state.token}`
-    }
     return config
   }
 
   const fetchUser = async () => {
     try {
+      console.log(tokenConfig())
       setState(prevState => ({ ...prevState, isLoading: true }))
-      const res = await Axios.get("/api/user/getUser", tokenConfig().headers)
+      const res = await Axios.get("/api/user/getUser", tokenConfig())
       const { data } = res
       setState(prevState => ({
         ...prevState,
@@ -48,7 +42,6 @@ const UserContextProvider = props => {
         isLoading: false,
         user: data
       }))
-      console.log(data)
     } catch (err) {
       console.error(err.response.data)
     }
@@ -60,6 +53,7 @@ const UserContextProvider = props => {
       const res = await Axios.post(`/api/user${url}`, body, tokenConfig())
       const { data } = res
       if (url === "/login") {
+        setState({ ...state, token: data.accessToken })
         localStorage.setItem("token", data.accessToken)
         fetchUser()
         history.replace("/home")

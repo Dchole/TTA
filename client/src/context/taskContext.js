@@ -14,18 +14,20 @@ const TaskContextProvider = props => {
     open: false,
     message: ""
   })
-  const token = localStorage.getItem("token")
+  const {
+    state: { token }
+  } = useContext(userContext)
+
+  const accessToken = token
 
   const tokenConfig = () => {
     const config = {
       headers: {
-        "Content-type": "application/json"
+        "Content-type": "application/json",
+        authorization: `Bearer ${accessToken}`
       }
     }
 
-    if (token) {
-      config.headers["authorization"] = `Bearer ${token}`
-    }
     return config
   }
 
