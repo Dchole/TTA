@@ -20,6 +20,7 @@ import {
 } from "@material-ui/core"
 import Visibility from "@material-ui/icons/Visibility"
 import VisibilityOff from "@material-ui/icons/VisibilityOff"
+import { useLocation } from "react-router"
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -41,7 +42,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function SignIn({ history, location: { pathname } }) {
+export default function SignIn() {
+  const location = useLocation()
+  const { pathname } = location
+
   const classes = useStyles()
   const [state, setState] = useState({
     email: "",

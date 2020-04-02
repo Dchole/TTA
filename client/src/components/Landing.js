@@ -13,13 +13,13 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Landing = props => {
+const Landing = () => {
   const classes = useStyles()
   return (
     <div className={classes.root}>
       <Container maxWidth="sm">
         <Paper style={{ height: "65vh" }}>
-          <Intro {...props} />
+          <Intro />
         </Paper>
       </Container>
     </div>

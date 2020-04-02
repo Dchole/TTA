@@ -10,7 +10,9 @@ import { MuiThemeProvider } from "@material-ui/core"
 import { themeContext } from "./context/themeContext"
 import { Route, Switch } from "react-router-dom"
 import Landing from "./components/Landing"
-import Forms from "./components/Forms"
+import RegisterPage from "./components/RegisterPage"
+import LoginPage from "./components/LoginPage"
+import { AnimatePresence } from "framer-motion"
 
 const App = () => {
   const { theme } = useContext(themeContext)
@@ -18,29 +20,31 @@ const App = () => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Switch>
-        <Route path="/" render={props => <Landing {...props} />} exact />
-        <Route path="/register" render={props => <Forms {...props} />} />
-        <Route path="/login" render={props => <Forms {...props} />} />
-        <Route
-          path="/home"
-          render={() => (
-            <>
-              <Appbar />
-              <Container maxWidth="md">
-                <br />
-                <Typography variant="h4" align="center">
-                  The Todo App
-                </Typography>
-                <br />
-                <TodoList />
-              </Container>
-              <AddTask />
-              <Feedback />
-            </>
-          )}
-        />
-      </Switch>
+      <AnimatePresence>
+        <Switch>
+          <Route path="/" component={Landing} exact />
+          <Route path="/register" component={RegisterPage} />
+          <Route path="/login" component={LoginPage} />
+          <Route
+            path="/home"
+            render={() => (
+              <>
+                <Appbar />
+                <Container maxWidth="md">
+                  <br />
+                  <Typography variant="h4" align="center">
+                    The Todo App
+                  </Typography>
+                  <br />
+                  <TodoList />
+                </Container>
+                <AddTask />
+                <Feedback />
+              </>
+            )}
+          />
+        </Switch>
+      </AnimatePresence>
     </MuiThemeProvider>
   )
 }

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import { blue, cyan } from "@material-ui/core/colors"
 import { Typography, Button } from "@material-ui/core"
 import { userContext } from "../context/userContext"
+import { useLocation } from "react-router"
 
 const useStyles = makeStyles(() => ({
   start: {
@@ -18,9 +19,10 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Intro = ({ location: { pathname } }) => {
+const Intro = () => {
+  const location = useLocation()
+  const { pathname } = location
   const classes = useStyles()
-  const { state } = useContext(userContext)
 
   return (
     <>
@@ -58,8 +60,11 @@ const Intro = ({ location: { pathname } }) => {
               pathname === "/"
                 ? "/register"
                 : pathname === "/register"
-                ? "/login"
-                : "/register"
+                ? { pathname: "/login", state: { prevPath: location.pathname } }
+                : {
+                    pathname: "/register",
+                    state: { prevPath: location.pathname }
+                  }
             }
             variant="outlined"
             color="inherit"
