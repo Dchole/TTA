@@ -39,7 +39,6 @@ const UserContextProvider = props => {
       const { data } = res
       setState(prevState => ({
         ...prevState,
-        isAuthenticated: true,
         isLoading: false,
         user: data
       }))
@@ -57,7 +56,10 @@ const UserContextProvider = props => {
         const { accessToken } = data
         localStorage.setItem("token", accessToken)
         fetchUser()
-        history.replace("/home")
+        setState(prevState => ({
+          ...prevState,
+          isAuthenticated: true
+        }))
       } else setFeedback({ msg: data.message, error: null, errPath: null })
     } catch (err) {
       console.log(err.response)
@@ -71,7 +73,10 @@ const UserContextProvider = props => {
 
   useEffect(() => {
     fetchUser()
-  }, [])
+    if (state.isAuthenticated) {
+      history.replace("/home")
+    }
+  }, [state.isAuthenticated])
 
   return (
     <userContext.Provider value={{ state, handleFormSubmit, feedback }}>

@@ -8,14 +8,16 @@ import Container from "@material-ui/core/Container"
 import Feedback from "./components/Feedback"
 import { MuiThemeProvider } from "@material-ui/core"
 import { themeContext } from "./context/themeContext"
-import { Route, Switch } from "react-router-dom"
+import { Route, Switch, Redirect } from "react-router-dom"
 import Landing from "./components/Landing"
 import RegisterPage from "./components/RegisterPage"
 import LoginPage from "./components/LoginPage"
 import { AnimatePresence } from "framer-motion"
+import { userContext } from "./context/userContext"
 
 const App = () => {
   const { theme } = useContext(themeContext)
+  // const { isAuthenticated } = useContext(userContext)
 
   return (
     <MuiThemeProvider theme={theme}>

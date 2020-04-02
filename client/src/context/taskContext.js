@@ -10,10 +10,12 @@ const TaskContextProvider = props => {
     loading: false,
     error: ""
   })
+
   const [feedback, setFeedback] = useState({
     open: false,
     message: ""
   })
+
   const {
     state: { token }
   } = useContext(userContext)
@@ -31,10 +33,8 @@ const TaskContextProvider = props => {
 
   const fetchTasks = async () => {
     try {
-      setState(prevState => ({ ...prevState, loading: true }))
+      setState({ ...state, loading: true })
       const res = await Axios.get("/api/tasks", tokenConfig())
-      console.log(tokenConfig())
-
       const data = res.data
       setState({ loading: false, error: "" })
       setTasks(data)
@@ -47,7 +47,7 @@ const TaskContextProvider = props => {
   const addTask = async task => {
     try {
       setState({ ...state, loading: true })
-      const res = await Axios.post("/api/tasks", task)
+      const res = await Axios.post("/api/tasks", task, tokenConfig())
       const data = res.data
       setFeedback({ open: true, message: "Task added Successfully!" })
       setState({ loading: false, error: "" })
@@ -60,7 +60,7 @@ const TaskContextProvider = props => {
   const editTask = async (id, task) => {
     try {
       setState({ ...state, loading: true })
-      await Axios.put(`/api/tasks/${id}`, task)
+      await Axios.put(`/api/tasks/${id}`, task, tokenConfig())
       setFeedback({ open: true, message: "Task Updated Successfully!" })
       setState({ loading: false, error: "" })
     } catch (err) {
@@ -70,7 +70,7 @@ const TaskContextProvider = props => {
 
   const deleteTask = async id => {
     try {
-      const res = await Axios.delete(`/api/tasks/${id}`)
+      const res = await Axios.delete(`/api/tasks/${id}`, tokenConfig())
       const data = res.data
       setFeedback({ open: true, message: data.message })
     } catch (err) {
