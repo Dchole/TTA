@@ -18,13 +18,11 @@ const TaskContextProvider = props => {
     state: { token }
   } = useContext(userContext)
 
-  const accessToken = token
-
   const tokenConfig = () => {
     const config = {
       headers: {
         "Content-type": "application/json",
-        authorization: `Bearer ${accessToken}`
+        authorization: `Bearer ${token}`
       }
     }
 

@@ -7,7 +7,7 @@ export const userContext = createContext()
 const UserContextProvider = props => {
   const history = useHistory()
   const [state, setState] = useState({
-    token: localStorage.getItem("token") ?? null,
+    token: localStorage.getItem("token") || null,
     isAuthenticated: false,
     isLoading: false,
     user: null
@@ -20,10 +20,12 @@ const UserContextProvider = props => {
   })
 
   const tokenConfig = () => {
+    const token = localStorage.getItem("token")
+    setState({ ...state, token })
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${state.token}`
+        Authorization: `Bearer ${token}`
       }
     }
 
@@ -32,7 +34,6 @@ const UserContextProvider = props => {
 
   const fetchUser = async () => {
     try {
-      console.log(tokenConfig())
       setState(prevState => ({ ...prevState, isLoading: true }))
       const res = await Axios.get("/api/user/getUser", tokenConfig())
       const { data } = res
@@ -53,8 +54,8 @@ const UserContextProvider = props => {
       const res = await Axios.post(`/api/user${url}`, body, tokenConfig())
       const { data } = res
       if (url === "/login") {
-        setState({ ...state, token: data.accessToken })
-        localStorage.setItem("token", data.accessToken)
+        const { accessToken } = data
+        localStorage.setItem("token", accessToken)
         fetchUser()
         history.replace("/home")
       } else setFeedback({ msg: data.message, error: null, errPath: null })
