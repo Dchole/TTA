@@ -4,28 +4,28 @@ import { userContext } from "./userContext"
 
 export const taskContext = createContext()
 
-const TaskContextProvider = props => {
+const TaskContextProvider = (props) => {
   const [tasks, setTasks] = useState([])
   const [state, setState] = useState({
     loading: false,
-    error: ""
+    error: "",
   })
 
   const [feedback, setFeedback] = useState({
     open: false,
-    message: ""
+    message: "",
   })
 
   const {
-    state: { token }
+    state: { token, isAuthenticated },
   } = useContext(userContext)
 
   const tokenConfig = () => {
     const config = {
       headers: {
         "Content-type": "application/json",
-        authorization: `Bearer ${token}`
-      }
+        authorization: `Bearer ${token}`,
+      },
     }
 
     return config
@@ -44,7 +44,7 @@ const TaskContextProvider = props => {
     }
   }
 
-  const addTask = async task => {
+  const addTask = async (task) => {
     try {
       setState({ ...state, loading: true })
       const res = await Axios.post("/api/tasks", task, tokenConfig())
@@ -68,26 +68,28 @@ const TaskContextProvider = props => {
     }
   }
 
-  const deleteTask = async id => {
+  const deleteTask = async (id) => {
     try {
+      setState({ ...state, loading: true })
       const res = await Axios.delete(`/api/tasks/${id}`, tokenConfig())
       const data = res.data
+      setState({ loading: false, error: "" })
       setFeedback({ open: true, message: data.message })
     } catch (err) {
       console.log(err.response.data)
     }
   }
 
-  const handleDelete = id => {
+  const handleDelete = (id) => {
     deleteTask(id)
-    const cpTasks = tasks.filter(task => task._id !== id)
+    const cpTasks = tasks.filter((task) => task._id !== id)
     setState({ ...state, error: "" })
     setTasks([...cpTasks])
   }
 
-  const handleCompleted = id => {
+  const handleCompleted = (id) => {
     const cpTasks = [...tasks]
-    const task = cpTasks.find(task => task._id === id)
+    const task = cpTasks.find((task) => task._id === id)
     task.status = !task.status
     editTask(id, task)
     setState({ ...state, error: "" })
@@ -97,7 +99,7 @@ const TaskContextProvider = props => {
   const handleTaskUpdate = (id, updatedTask) => {
     const cpTasks = [...tasks]
 
-    const task = cpTasks.find(task => task._id === id)
+    const task = cpTasks.find((task) => task._id === id)
     cpTasks[cpTasks.indexOf(task)] = updatedTask
 
     editTask(id, updatedTask)
@@ -105,7 +107,7 @@ const TaskContextProvider = props => {
     setTasks([...cpTasks])
   }
 
-  ;(function() {
+  ;(function () {
     const today = new Date()
 
     for (const task of tasks) {
@@ -121,7 +123,7 @@ const TaskContextProvider = props => {
 
   useEffect(() => {
     fetchTasks()
-  }, [])
+  }, [isAuthenticated])
 
   return (
     <taskContext.Provider
@@ -133,7 +135,7 @@ const TaskContextProvider = props => {
         setFeedback,
         handleTaskUpdate,
         handleDelete,
-        handleCompleted
+        handleCompleted,
       }}
     >
       {props.children}
