@@ -4,19 +4,19 @@ import { useHistory } from "react-router"
 
 export const userContext = createContext()
 
-const UserContextProvider = (props) => {
+const UserContextProvider = props => {
   const history = useHistory()
   const [state, setState] = useState({
     token: localStorage.getItem("token") || null,
     isAuthenticated: false,
     isLoading: false,
-    user: null,
+    user: null
   })
 
   const [feedback, setFeedback] = useState({
     msg: null,
     error: null,
-    errPath: null,
+    errPath: null
   })
 
   const tokenConfig = () => {
@@ -25,8 +25,9 @@ const UserContextProvider = (props) => {
     const config = {
       headers: {
         "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
+      withCredentials: true
     }
 
     return config
@@ -34,14 +35,14 @@ const UserContextProvider = (props) => {
 
   const fetchUser = async () => {
     try {
-      setState((prevState) => ({ ...prevState, isLoading: true }))
+      setState(prevState => ({ ...prevState, isLoading: true }))
       const res = await Axios.get("/api/user/getUser", tokenConfig())
       const { data } = res
-      setState((prevState) => ({
+      setState(prevState => ({
         ...prevState,
         isLoading: false,
         isAuthenticated: true,
-        user: data,
+        user: data
       }))
     } catch (err) {
       console.error(err.response.data)
@@ -51,21 +52,21 @@ const UserContextProvider = (props) => {
   const handleFormSubmit = async (cred, url) => {
     try {
       const body = JSON.stringify(cred)
-      setState((prevState) => ({ ...prevState, isLoading: true }))
+      setState(prevState => ({ ...prevState, isLoading: true }))
       const res = await Axios.post(`/api/user${url}`, body, tokenConfig())
       const { data } = res
       if (url === "/login") {
         const { accessToken } = data
         localStorage.setItem("token", accessToken)
         fetchUser()
-        setState((prevState) => ({
+        setState(prevState => ({
           ...prevState,
           isAuthenticated: true,
-          isLoading: false,
+          isLoading: false
         }))
         history.replace("/home")
       } else {
-        setState((prevState) => ({ ...prevState, isLoading: false }))
+        setState(prevState => ({ ...prevState, isLoading: false }))
         setFeedback({ msg: data.message, error: null, errPath: null })
         history.replace("/login")
       }
@@ -74,7 +75,7 @@ const UserContextProvider = (props) => {
       setFeedback({
         ...feedback,
         error: err.response.data.message,
-        errPath: err.response.data.path,
+        errPath: err.response.data.path
       })
     }
   }

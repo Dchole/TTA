@@ -1,6 +1,7 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const path = require("path")
+const cookieParser = require("cookie-parser")
 const favicon = require("serve-favicon")
 
 const app = express()
@@ -14,6 +15,7 @@ const user = require("./routes/api/user")
 // Middlewares
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "build")))
+app.use(cookieParser())
 app.use(favicon(path.join(__dirname, "build", "favicon.ico")))
 
 mongoose
@@ -21,7 +23,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
   })
   .then(() => console.log("Connected to Database!"))
   .catch(err => console.log(err))

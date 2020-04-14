@@ -59,7 +59,7 @@ router.post("/login", async (req, res) => {
       })
 
     const user = await User.findOne({ email: req.body.email })
-    const password = bcrypt.compareSync(req.body.password, user.password)
+    const password = await bcrypt.compare(req.body.password, user.password)
 
     if (!user)
       return res.status(400).json({ message: "wrong email", path: "email" })
@@ -73,38 +73,42 @@ router.post("/login", async (req, res) => {
     })
 
     const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_SECRET)
-    const token = new Refresh({ refresh_tokens: refreshToken })
+    const token = new Refresh({ token: refreshToken, user: user._id })
     await token.save()
-    res.json({ accessToken, refreshToken })
+    res.cookie("refreshToken", refreshToken, { httpOnly: true })
+    res.json({ accessToken })
   } catch (err) {
     res.send(err)
   }
 })
 
-router.post("/token", async (req, res) => {
-  const { token } = req.body
-  const refresh = await Refresh.find()
-  const refreshTokens = refresh.map(rt => rt.refresh_tokens)
+router.get("/token", async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken
+    const refresh = await Refresh.findOne({ token })
 
-  if (!token) return res.sendStatus(401)
+    if (!token) return res.sendStatus(401)
 
-  if (!refreshTokens.includes(token)) return res.sendStatus(403)
+    if (!refresh) return res.sendStatus(403)
 
-  jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
+    jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
 
-    const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "10m"
+      const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: "10m"
+      })
+
+      res.json({ accessToken })
     })
-
-    res.json({ accessToken })
-  })
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 router.post("/logout", async (req, res) => {
   try {
     const { token } = req.body
-    await Refresh.findOneAndDelete({ refresh_tokens: token })
+    await Refresh.findOneAndDelete({ token })
 
     res.json({ message: "Logout successful" })
   } catch (err) {
