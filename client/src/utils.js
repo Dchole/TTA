@@ -4,16 +4,21 @@ export const tokenConfig = token => {
   const config = {
     headers: {
       "Content-type": "application/json",
-      authorization: `Bearer ${token}`,
-    },
+      authorization: `Bearer ${token}`
+    }
   }
 
   return config
 }
 
-export const resetToken = async refresh => {
-  const res = await Axios.post("api/user/token", refresh)
+export const resetToken = async () => {
+  const res = await Axios("api/user/token", {
+    method: "POST",
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
   const { data } = res
-  localStorage.setItem("token", data.accessToken)
   return data
 }

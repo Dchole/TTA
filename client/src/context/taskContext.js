@@ -9,24 +9,24 @@ const TaskContextProvider = props => {
   const [tasks, setTasks] = useState([])
   const [state, setState] = useState({
     loading: false,
-    error: "",
+    error: ""
   })
 
   const [feedback, setFeedback] = useState({
     open: false,
-    message: "",
+    message: ""
   })
 
   const {
-    state: { token, isAuthenticated },
+    state: { token, isAuthenticated }
   } = useContext(userContext)
 
   const tokenConfig = () => {
     const config = {
       headers: {
         "Content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
+        authorization: `Bearer ${token}`
+      }
     }
 
     return config
@@ -35,52 +35,77 @@ const TaskContextProvider = props => {
   const fetchTasks = async () => {
     try {
       setState({ ...state, loading: true })
-      const res = await Axios.get("/api/tasks", tokenConfig())
-      const data = res.data
+      const res = await Axios.get("/api/tasks", tokenConfig(token))
+      const { data } = res
       setState({ loading: false, error: "" })
       setTasks(data)
     } catch (err) {
-      console.log(err.response.data)
+      console.log(err.response)
       if (err.response.status === 403) {
-        resetToken()
-      }
-      setState({ loading: false, error: err.response.message })
+        const newToken = resetToken()
+        const res = await Axios.get("/api/tasks", tokenConfig(newToken))
+        const { data } = res
+        setTasks(data)
+        setState({ loading: false, error: "" })
+      } else setState({ loading: false, error: err.response.message })
     }
   }
 
   const addTask = async task => {
     try {
       setState({ ...state, loading: true })
-      const res = await Axios.post("/api/tasks", task, tokenConfig())
-      const data = res.data
+      const res = await Axios.post("/api/tasks", task, tokenConfig(token))
+      const { data } = res
       setFeedback({ open: true, message: "Task added Successfully!" })
       setState({ loading: false, error: "" })
       setTasks([data, ...tasks])
     } catch (err) {
-      setState({ loading: false, error: err.response.message })
+      if (err.response.status === 403) {
+        const newToken = resetToken()
+        const res = await Axios.post("/api/tasks", task, tokenConfig(newToken))
+        const { data } = res
+        setFeedback({ open: true, message: "Task added Successfully!" })
+        setState({ loading: false, error: "" })
+        setTasks([data, ...tasks])
+      } else setState({ loading: false, error: err.response.message })
     }
   }
 
   const editTask = async (id, task) => {
     try {
       setState({ ...state, loading: true })
-      await Axios.put(`/api/tasks/${id}`, task, tokenConfig())
+      await Axios.put(`/api/tasks/${id}`, task, tokenConfig(token))
       setFeedback({ open: true, message: "Task Updated Successfully!" })
       setState({ loading: false, error: "" })
     } catch (err) {
-      setState({ loading: false, error: err.response.message })
+      if (err.response.status === 403) {
+        const newToken = resetToken()
+        await Axios.put(`/api/tasks/${id}`, task, tokenConfig(newToken))
+        setFeedback({ open: true, message: "Task Updated Successfully!" })
+        setState({ loading: false, error: "" })
+      } else setState({ loading: false, error: err.response.message })
     }
   }
 
   const deleteTask = async id => {
     try {
       setState({ ...state, loading: true })
-      const res = await Axios.delete(`/api/tasks/${id}`, tokenConfig())
+      const res = await Axios.delete(`/api/tasks/${id}`, tokenConfig(token))
       const data = res.data
       setState({ loading: false, error: "" })
       setFeedback({ open: true, message: data.message })
     } catch (err) {
-      console.log(err.response.data)
+      console.log(err.response)
+      if (err.response.status === 403) {
+        const newToken = resetToken()
+        const res = await Axios.delete(
+          `/api/tasks/${id}`,
+          tokenConfig(newToken)
+        )
+        const { data } = res
+        setTasks(data)
+        setState({ loading: false, error: "" })
+      } else setState({ loading: false, error: err.response.message })
     }
   }
 
@@ -139,7 +164,7 @@ const TaskContextProvider = props => {
         setFeedback,
         handleTaskUpdate,
         handleDelete,
-        handleCompleted,
+        handleCompleted
       }}
     >
       {props.children}

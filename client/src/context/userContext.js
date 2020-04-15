@@ -7,88 +7,109 @@ export const userContext = createContext()
 const UserContextProvider = props => {
   const history = useHistory()
   const [state, setState] = useState({
-    token: localStorage.getItem("token") || null,
+    token: null,
     isAuthenticated: false,
     isLoading: false,
-    user: null
+    user: {}
   })
 
   const [feedback, setFeedback] = useState({
     msg: null,
-    error: null,
-    errPath: null
+    error: {}
   })
 
-  const tokenConfig = () => {
-    const token = localStorage.getItem("token")
-    setState({ ...state, token })
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      withCredentials: true
-    }
+  const refresh = async () => {
+    try {
+      setState({ ...state, isLoading: true })
+      const res = await Axios("/api/user/token", {
+        method: "POST",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
 
-    return config
+      const { data } = res
+      setState({
+        ...state,
+        token: data.accessToken,
+        isLoading: false
+      })
+      setFeedback({ ...feedback, error: {} })
+      fetchUser(data.accessToken)
+    } catch (err) {
+      console.log(err.response)
+      setState({ ...state, isLoading: false })
+      setFeedback({ ...feedback, error: err.response })
+    }
   }
 
-  const fetchUser = async () => {
+  const fetchUser = async token => {
     try {
-      setState(prevState => ({ ...prevState, isLoading: true }))
-      const res = await Axios.get("/api/user/getUser", tokenConfig())
+      setState({ ...state, isLoading: true })
+      const res = await Axios("/api/user/getUser", {
+        method: "GET",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`
+        }
+      })
+
       const { data } = res
-      setState(prevState => ({
-        ...prevState,
-        isLoading: false,
+      setState({
+        ...state,
+        user: data,
         isAuthenticated: true,
-        user: data
-      }))
+        isLoading: false,
+        token
+      })
+      setFeedback({ ...feedback, error: {} })
     } catch (err) {
-      console.error(err.response.data)
+      console.log(err.response)
+      setState({ ...state, isLoading: false })
+      setFeedback({ ...feedback, error: err.response })
     }
   }
 
   const handleFormSubmit = async (cred, url) => {
     try {
+      setState({ ...state, isLoading: true })
       const body = JSON.stringify(cred)
-      setState(prevState => ({ ...prevState, isLoading: true }))
-      const res = await Axios.post(`/api/user${url}`, body, tokenConfig())
+      const res = await Axios(`/api/user/${url}`, {
+        method: "POST",
+        data: body,
+        headers: { "Content-Type": "application/json" }
+      })
       const { data } = res
       if (url === "/login") {
-        const { accessToken } = data
-        localStorage.setItem("token", accessToken)
-        fetchUser()
-        setState(prevState => ({
-          ...prevState,
+        setState({
+          ...state,
+          token: data.accessToken,
           isAuthenticated: true,
           isLoading: false
-        }))
+        })
+        setFeedback({ ...feedback, error: {} })
+        fetchUser(data.accessToken)
         history.replace("/home")
       } else {
-        setState(prevState => ({ ...prevState, isLoading: false }))
-        setFeedback({ msg: data.message, error: null, errPath: null })
-        history.replace("/login")
+        setFeedback({ msg: data.message, error: {} })
       }
     } catch (err) {
       console.log(err.response)
-      setFeedback({
-        ...feedback,
-        error: err.response.data.message,
-        errPath: err.response.data.path
-      })
+      setState({ ...state, isLoading: false })
+      setFeedback({ ...feedback, error: err.response })
     }
   }
 
   useEffect(() => {
-    fetchUser()
-    if (state.isAuthenticated) {
-      history.replace("/home")
-    }
-  }, [])
+    refresh()
+  }, [state.isAuthenticated])
 
   return (
-    <userContext.Provider value={{ state, handleFormSubmit, feedback }}>
+    <userContext.Provider
+      value={{ state, handleFormSubmit, feedback, refresh }}
+    >
       {props.children}
     </userContext.Provider>
   )

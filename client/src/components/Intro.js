@@ -1,9 +1,8 @@
-import React, { useContext } from "react"
+import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { Link } from "react-router-dom"
 import { blue, cyan } from "@material-ui/core/colors"
 import { Typography, Button } from "@material-ui/core"
-import { userContext } from "../context/userContext"
 import { useLocation } from "react-router"
 
 const useStyles = makeStyles(() => ({

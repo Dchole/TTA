@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
   }
 })
 
-router.get("/token", async (req, res) => {
+router.post("/token", async (req, res) => {
   try {
     const token = req.cookies.refreshToken
     const refresh = await Refresh.findOne({ token })
@@ -107,8 +107,7 @@ router.get("/token", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
   try {
-    const { token } = req.body
-    await Refresh.findOneAndDelete({ token })
+    res.clearCookie("refreshToken")
 
     res.json({ message: "Logout successful" })
   } catch (err) {

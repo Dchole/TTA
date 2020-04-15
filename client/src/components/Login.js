@@ -53,10 +53,7 @@ export default function SignIn() {
   })
   const [showPassword, setShowPassword] = useState(false)
 
-  const {
-    state: { isAuthenticated },
-    handleFormSubmit
-  } = useContext(userContext)
+  const { handleFormSubmit } = useContext(userContext)
 
   const handleInput = field => event => {
     setState({ ...state, [field]: event.target.value })
