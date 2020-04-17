@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useContext } from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import { Grid, Container, Paper, Hidden } from "@material-ui/core"
 import Intro from "./Intro"
 import Login from "./Login"
 import { motion } from "framer-motion"
-import { useLocation } from "react-router"
+import { useLocation, Redirect } from "react-router"
+import { userContext } from "../context/userContext"
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -22,6 +23,11 @@ const pageVariants = {
 const LoginPage = () => {
   const location = useLocation()
   const classes = useStyles()
+  const {
+    state: { isAuthenticated }
+  } = useContext(userContext)
+
+  if (isAuthenticated) return <Redirect to="/" />
 
   return (
     <motion.div

@@ -41,7 +41,7 @@ export default function SignUp({ path }) {
 
   const {
     handleFormSubmit,
-    feedback: { error, errPath }
+    feedback: { error }
   } = useContext(userContext)
 
   const handleInput = field => event => {
@@ -71,8 +71,10 @@ export default function SignUp({ path }) {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
-              error={error && errPath === "username" ? true : false}
-              helperText={error && errPath === "username" ? error : null}
+              error={error && error.path === "username" ? true : false}
+              helperText={
+                error && error.path === "username" ? error.message : null
+              }
               autoComplete="username"
               name="username"
               variant="outlined"
@@ -87,8 +89,10 @@ export default function SignUp({ path }) {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              error={error && errPath === "email" ? true : false}
-              helperText={error && errPath === "email" ? error : null}
+              error={error && error.path === "email" ? true : false}
+              helperText={
+                error && error.path === "email" ? error.message : null
+              }
               autoComplete="email"
               name="email"
               variant="outlined"
@@ -102,8 +106,10 @@ export default function SignUp({ path }) {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              error={error && errPath === "password" ? true : false}
-              helperText={error && errPath === "password" ? error : null}
+              error={error && error.path === "password" ? true : false}
+              helperText={
+                error && error.path === "password" ? error.message : null
+              }
               variant="outlined"
               required
               fullWidth
@@ -118,8 +124,10 @@ export default function SignUp({ path }) {
           </Grid>
           <Grid item xs={12}>
             <TextField
-              error={error && errPath === "confirmPassword" ? true : false}
-              helperText={error && errPath === "confirmPassword" ? error : null}
+              error={error && error.path === "confirmPassword" ? true : false}
+              helperText={
+                error && error.path === "confirmPassword" ? error.message : null
+              }
               variant="outlined"
               required
               fullWidth

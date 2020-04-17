@@ -91,7 +91,7 @@ const UserContextProvider = props => {
         })
         setFeedback({ ...feedback, error: {} })
         fetchUser(data.accessToken)
-        history.replace("/home")
+        history.replace("/")
       } else {
         setFeedback({ msg: data.message, error: {} })
       }
@@ -102,13 +102,15 @@ const UserContextProvider = props => {
     }
   }
 
+  const refreshtoken = token => setState({ ...state, token })
+
   useEffect(() => {
     refresh()
   }, [state.isAuthenticated])
 
   return (
     <userContext.Provider
-      value={{ state, handleFormSubmit, feedback, refresh }}
+      value={{ state, handleFormSubmit, feedback, refresh, refreshtoken }}
     >
       {props.children}
     </userContext.Provider>

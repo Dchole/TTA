@@ -53,7 +53,10 @@ export default function SignIn() {
   })
   const [showPassword, setShowPassword] = useState(false)
 
-  const { handleFormSubmit } = useContext(userContext)
+  const {
+    handleFormSubmit,
+    feedback: { error }
+  } = useContext(userContext)
 
   const handleInput = field => event => {
     setState({ ...state, [field]: event.target.value })
@@ -80,6 +83,8 @@ export default function SignIn() {
         }}
       >
         <TextField
+          error={error && error.path === "email" ? true : false}
+          helperText={error && error.path === "email" ? error.message : null}
           variant="outlined"
           margin="normal"
           required

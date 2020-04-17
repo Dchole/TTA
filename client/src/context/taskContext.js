@@ -18,7 +18,8 @@ const TaskContextProvider = props => {
   })
 
   const {
-    state: { token, isAuthenticated }
+    state: { token, isAuthenticated },
+    refreshtoken
   } = useContext(userContext)
 
   const tokenConfig = () => {
@@ -43,6 +44,7 @@ const TaskContextProvider = props => {
       console.log(err.response)
       if (err.response.status === 403) {
         const newToken = resetToken()
+        refreshtoken(newToken)
         const res = await Axios.get("/api/tasks", tokenConfig(newToken))
         const { data } = res
         setTasks(data)
@@ -62,6 +64,7 @@ const TaskContextProvider = props => {
     } catch (err) {
       if (err.response.status === 403) {
         const newToken = resetToken()
+        refreshtoken(newToken)
         const res = await Axios.post("/api/tasks", task, tokenConfig(newToken))
         const { data } = res
         setFeedback({ open: true, message: "Task added Successfully!" })
@@ -80,6 +83,7 @@ const TaskContextProvider = props => {
     } catch (err) {
       if (err.response.status === 403) {
         const newToken = resetToken()
+        refreshtoken(newToken)
         await Axios.put(`/api/tasks/${id}`, task, tokenConfig(newToken))
         setFeedback({ open: true, message: "Task Updated Successfully!" })
         setState({ loading: false, error: "" })
@@ -98,6 +102,7 @@ const TaskContextProvider = props => {
       console.log(err.response)
       if (err.response.status === 403) {
         const newToken = resetToken()
+        refreshtoken(newToken)
         const res = await Axios.delete(
           `/api/tasks/${id}`,
           tokenConfig(newToken)
